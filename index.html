@@ -388,8 +388,16 @@ input[type=range]{width:100%;accent-color:#191919}
         <div class="chips" id="chOut">
           <button data-v="none" class="on" data-i18n="out.none">투명</button>
           <button data-v="color" data-i18n="out.color">단색</button>
+          <button data-v="image" data-i18n="out.image">이미지</button>
         </div>
         <div class="row"><label data-i18n="lb.color">색상</label><input type="color" class="sw" id="cOut"></div>
+        <div class="row" id="rOutImg" style="display:none">
+          <span class="btn filebtn grow" style="text-align:center"><span data-i18n="lb.pick">이미지 선택</span><input type="file" id="fOut" accept="image/*"></span>
+          <button class="btn sm" id="outImgClear">×</button>
+        </div>
+        <div class="row" id="rOutZ" style="display:none"><label data-i18n="lb.zoom">배경 배율</label><input type="range" id="rOutZoom" min="100" max="320" step="2"><span id="vOutZoom" class="hint" style="margin:0;width:38px"></span></div>
+        <div class="row" id="rOutX" style="display:none"><label data-i18n="lb.posx">가로 위치</label><input type="range" id="rOutXs" min="-100" max="100" step="1"></div>
+        <div class="row" id="rOutY" style="display:none"><label data-i18n="lb.posy">세로 위치</label><input type="range" id="rOutYs" min="-100" max="100" step="1"></div>
         <div class="row"><label data-i18n="lb.pad">여백</label><input type="range" id="rPad" min="0" max="240" step="2"><span id="vPad" class="hint" style="margin:0;width:34px"></span></div>
         <div class="row wide"><label data-i18n="lb.ratio">배경 비율</label></div>
         <div class="chips" id="chRatio">
@@ -441,7 +449,7 @@ const I18N = {
   "sec.tabs":"Tab bar","tb.hint":"Unread counts. 0 hides the badge.","tb.t1":"Friends","tb.t2":"Chats","tb.t3":"Open chat","tb.t4":"Shop","tb.t5":"More","tb.dot":"Red dot on More","sec.friendlist":"Friends screen","fr.people":"Friends (participants)","fr.showMe":"Show my profile row","fr.label":"Section title","fr.fav":"Favorites section","fr.favN":"Favorites count","sec.prof":"Profile screen","pf.kind":"Type","pf.me":"My profile","pf.friend":"Friend's profile","pf.name":"Name","pf.photo":"Profile photo","pf.bg":"Cover","pf.bgImage":"Image","pf.bgColor":"Solid","pf.bgSame":"Same as chat room","pf.statusDark":"Dark status bar text (for light covers)","pf.editLabel":"Edit button","pf.center":"Center","pf.chipDark":"Darker chips (for light covers)","pf.chipW":"Chip width","pf.chipX":"Horizontal","pf.chipY":"Vertical","pf.dragHint":"You can also drag the chips right on the preview.","pf.music":"Music chip","pf.song":"Song","pf.artist":"Artist","pf.right":"Right","pf.left":"Left","pf.today":"TODAY chip (my profile only)","pf.todayN":"Visits","pf.btn1":"Button 1","pf.btn2":"Button 2","pf.grid":"Post grid","pf.notice":"Bottom visibility notice","sec.people":"Participants","lb.me":"Me (right side)","lb.others":"Others","lb.photo":"Photo","lb.addMemb":"+ Add participant","lb.status":"Status message",
   "sec.msgs":"Messages","lb.anchor":"Conversation starts at","an.top":"Top","an.bottom":"Bottom (like the real app)","lb.addMsg":"+ Message","lb.addDate":"+ Date line","lb.clear":"Clear",
   "lb.msgHint":"The timestamp shows only on the last message of a run. Consecutive messages from the same person share one profile picture.",
-  "sec.export":"Mockup & export","lb.mock":"iPhone mockup","lb.mockColor":"Device color","lb.outbg":"Outer background","out.none":"Transparent","out.color":"Solid","lb.pad":"Padding","lb.ratio":"Canvas ratio","rt.auto":"Auto",
+  "sec.export":"Mockup & export","lb.mock":"iPhone mockup","lb.mockColor":"Device color","lb.outbg":"Outer background","out.none":"Transparent","out.color":"Solid","out.image":"Image","lb.pad":"Padding","lb.ratio":"Canvas ratio","rt.auto":"Auto",
   "lb.saveRange":"Save range","sv.screen":"Screen as shown","sv.full":"Whole conversation (tall)","lb.save":"Save as PNG",
   "lb.saveHint":"On a phone the image appears on screen — press and hold it, then choose \"Save to Photos\".",
   "ov.hint":"Press and hold the image, then \"Save to Photos\"","ov.close":"Close"
@@ -503,7 +511,7 @@ const S = {
   friends:{ showMe:true, label:"", favOn:false, favCount:1 },
   tabs:{ badges:[0,0,0,0,0], moreDot:false },
   msgs:[],
-  mock:false, mockColor:"#1F1F1F", outMode:"none", outColor:"#FFFFFF", pad:24, outRatio:"auto",
+  mock:false, mockColor:"#1F1F1F", outMode:"none", outColor:"#FFFFFF", outImage:null, outFit:{zoom:100, ox:0, oy:0}, pad:24, outRatio:"auto",
   saveMode:"screen", anchor:"top",
   prof:{
     kind:"me", name:"정스텔라", img:null,
@@ -2133,6 +2141,10 @@ function paint(g, scale, full){
   g.setTransform(scale,0,0,scale,0,0);
   g.clearRect(0,0,OW,OH);
   if(S.outMode === "color"){ g.fillStyle = S.outColor; g.fillRect(0,0,OW,OH); }
+  else if(S.outMode === "image" && S.outImage){
+    g.fillStyle = S.outColor; g.fillRect(0,0,OW,OH);
+    drawFitted(g, S.outImage, 0, 0, OW, OH, S.outFit);
+  }
 
   g.save();
   g.translate(B.offX, B.offY);
@@ -2301,7 +2313,17 @@ chips("#chDark",   v=>{ S.dark = v==="dark";
   resetColorsFromPalette(); render(); });
 chips("#chDevice", v=>{ S.device=v; render(); });
 chips("#chBg", v=>{ S.bgMode=v; toggleRows(); render(); });
-chips("#chOut", v=>{ S.outMode=v; render(); });
+chips("#chOut", v=>{ S.outMode=v; toggleOutRows(); render(); });
+function toggleOutRows(){
+  const on = S.outMode === "image" ? "" : "none";
+  ["#rOutImg","#rOutZ","#rOutX","#rOutY"].forEach(id => $(id).style.display = on);
+}
+$("#fOut").addEventListener("change", async e=>{ const fl=e.target.files[0]; if(!fl) return;
+  S.outImage = await fileToBitmap(fl); S.outMode="image"; setChip("#chOut","image"); toggleOutRows(); render(); });
+$("#outImgClear").addEventListener("click", ()=>{ S.outImage=null; render(); });
+$("#rOutZoom").addEventListener("input", e=>{ S.outFit.zoom=+e.target.value; $("#vOutZoom").textContent=e.target.value+"%"; render(); });
+$("#rOutXs").addEventListener("input", e=>{ S.outFit.ox=+e.target.value; render(); });
+$("#rOutYs").addEventListener("input", e=>{ S.outFit.oy=+e.target.value; render(); });
 chips("#chRatio", v=>{ S.outRatio=v; render(); });
 chips("#chSaveMode", v=>{ S.saveMode=v; });
 chips("#chAnchor", v=>{ S.anchor=v; render(); });
@@ -2359,7 +2381,8 @@ $("#tStatusMsg").addEventListener("input", e=>{ S.statusMsg=e.target.value; rend
 /* ---- 목업 ---- */
 $("#kMock").addEventListener("change", e=>{ S.mock=e.target.checked; render(); });
 $("#cMock").addEventListener("input", e=>{ S.mockColor=e.target.value; render(); });
-$("#cOut").addEventListener("input", e=>{ S.outColor=e.target.value; if(S.outMode!=="color"){S.outMode="color"; setChip("#chOut","color");} render(); });
+$("#cOut").addEventListener("input", e=>{ S.outColor=e.target.value;
+  if(S.outMode==="none"){ S.outMode="color"; setChip("#chOut","color"); toggleOutRows(); } render(); });
 $("#rPad").addEventListener("input", e=>{ S.pad=+e.target.value; $("#vPad").textContent=S.pad; render(); });
 $("#save").addEventListener("click", save);
 $("#ovClose").addEventListener("click", ()=>$("#ov").classList.remove("on"));
@@ -2693,6 +2716,9 @@ function init(){
   $("#rFont").value = S.fontSize; $("#vFont").textContent = S.fontSize;
   $("#rPad").value = S.pad; $("#vPad").textContent = S.pad;
   $("#cMock").value = S.mockColor; $("#cOut").value = S.outColor;
+  $("#rOutZoom").value = S.outFit.zoom; $("#vOutZoom").textContent = S.outFit.zoom+"%";
+  $("#rOutXs").value = S.outFit.ox; $("#rOutYs").value = S.outFit.oy;
+  toggleOutRows();
   resetColorsFromPalette();
   const P = S.prof;
   $("#pfName").value = P.name; $("#pfSong").value = P.music.title;
