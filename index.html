@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>카카오톡 메이커 v14</title>
+<title>카카오톡 메이커 v16</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -121,7 +121,7 @@ input[type=range]{width:100%;accent-color:#191919}
 
   <div id="panel">
     <div id="panelHead">
-      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v14</span>
+      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v16</span>
       <div class="langbox">
         <button id="langKo" class="on">한국어</button><button id="langEn">English</button>
       </div>
@@ -320,7 +320,13 @@ input[type=range]{width:100%;accent-color:#191919}
         <div class="row"><label data-i18n="lb.zoom">배경 배율</label><input type="range" id="pfBgZoom" min="100" max="320" step="2"><span id="vPfBgZoom" class="hint" style="margin:0;width:38px"></span></div>
         <div class="row"><label data-i18n="lb.posx">가로 위치</label><input type="range" id="pfBgX" min="-100" max="100" step="1"></div>
         <div class="row"><label data-i18n="lb.posy">세로 위치</label><input type="range" id="pfBgY" min="-100" max="100" step="1"></div>
-        <label class="tog"><input type="checkbox" id="pfStatusDark"><span data-i18n="pf.statusDark">상단 글자·아이콘 어둡게 (밝은 배경일 때)</span></label>
+        <div class="row wide"><label data-i18n="pf.statusInk">상단 글자·아이콘</label></div>
+        <div class="chips" id="chStatusInk">
+          <button data-v="auto" class="on" data-i18n="pf.inkAuto">자동</button>
+          <button data-v="light" data-i18n="pf.inkLight">흰색</button>
+          <button data-v="dark" data-i18n="pf.inkDark">검정</button>
+        </div>
+        <p class="hint" data-i18n="pf.inkHint">자동이면 배경 위쪽이 밝을 때 알아서 검정으로 바뀝니다.</p>
 
         <div class="row" style="margin-top:12px"><label data-i18n="pf.editLabel">편집 버튼</label><input type="text" id="pfEdit" class="grow" placeholder="프로필 편집"></div>
 
@@ -452,7 +458,7 @@ const I18N = {
   "sec.look":"Background & bubbles","lb.bg":"Chat background","bg.default":"Default","bg.color":"Solid","bg.image":"Image","lb.color":"Color","lb.file":"File","lb.pick":"Choose image","lb.zoom":"Zoom","lb.posx":"Horizontal","lb.posy":"Vertical","lb.fitReset":"Reset position & zoom",
   "lb.bubbleColor":"Bubble colors","lb.send":"Sent","lb.recv":"Received","lb.bgtext":"fill / text","lb.radius":"Corner","lb.tail":"Bubble tail","lb.unread":"Show unread count","lb.unreadC":"Unread color","lb.fontsize":"Text size",
   "sec.header":"Status bar & header","lb.statusbar":"Show status bar","lb.time":"Time","lb.battery":"Battery","lb.charging":"Charging","lb.silent":"Silent mode icon","lb.title":"Room name","lb.people":"Members","lb.searchIco":"Search icon","lb.menuIco":"Menu (≡) icon","lb.inputbar":"Show input bar","lb.inputTxt":"Input placeholder",
-  "sec.tabs":"Tab bar","tb.hint":"Unread counts. 0 hides the badge.","tb.t1":"Friends","tb.t2":"Chats","tb.t3":"Open chat","tb.t4":"Shop","tb.t5":"More","tb.dot":"Red dot on More","sec.friendlist":"Friends screen","fr.people":"Friends (participants)","fr.showMe":"Show my profile row","fr.label":"Section title","fr.fav":"Favorites section","fr.favN":"Favorites count","sec.prof":"Profile screen","pf.kind":"Type","pf.me":"My profile","pf.friend":"Friend's profile","pf.name":"Name","pf.status":"Status message","pf.photo":"Profile photo","pf.bg":"Cover","pf.bgImage":"Image","pf.bgColor":"Solid","pf.bgSame":"Same as chat room","pf.statusDark":"Dark status bar text (for light covers)","pf.editLabel":"Edit button","pf.center":"Center","pf.chipDark":"Darker chips (for light covers)","pf.chipW":"Chip width","pf.chipX":"Horizontal","pf.chipY":"Vertical","pf.dragHint":"You can also drag the chips right on the preview.","pf.music":"Music chip","pf.song":"Song","pf.artist":"Artist","pf.right":"Right","pf.left":"Left","pf.today":"TODAY chip (my profile only)","pf.todayN":"Visits","pf.btn1":"Button 1","pf.btn2":"Button 2","pf.grid":"Post grid","pf.notice":"Bottom visibility notice","sec.people":"Participants","lb.me":"Me (right side)","lb.others":"Others","lb.photo":"Photo","lb.addMemb":"+ Add participant","lb.status":"Status message",
+  "sec.tabs":"Tab bar","tb.hint":"Unread counts. 0 hides the badge.","tb.t1":"Friends","tb.t2":"Chats","tb.t3":"Open chat","tb.t4":"Shop","tb.t5":"More","tb.dot":"Red dot on More","sec.friendlist":"Friends screen","fr.people":"Friends (participants)","fr.showMe":"Show my profile row","fr.label":"Section title","fr.fav":"Favorites section","fr.favN":"Favorites count","sec.prof":"Profile screen","pf.kind":"Type","pf.me":"My profile","pf.friend":"Friend's profile","pf.name":"Name","pf.status":"Status message","pf.photo":"Profile photo","pf.bg":"Cover","pf.bgImage":"Image","pf.bgColor":"Solid","pf.bgSame":"Same as chat room","pf.statusInk":"Status bar ink","pf.inkAuto":"Auto","pf.inkLight":"White","pf.inkDark":"Black","pf.inkHint":"Auto switches to black when the top of the cover is light.","pf.editLabel":"Edit button","pf.center":"Center","pf.chipDark":"Darker chips (for light covers)","pf.chipW":"Chip width","pf.chipX":"Horizontal","pf.chipY":"Vertical","pf.dragHint":"You can also drag the chips right on the preview.","pf.music":"Music chip","pf.song":"Song","pf.artist":"Artist","pf.right":"Right","pf.left":"Left","pf.today":"TODAY chip (my profile only)","pf.todayN":"Visits","pf.btn1":"Button 1","pf.btn2":"Button 2","pf.grid":"Post grid","pf.notice":"Bottom visibility notice","sec.people":"Participants","lb.me":"Me (right side)","lb.others":"Others","lb.photo":"Photo","lb.addMemb":"+ Add participant","lb.status":"Status message",
   "sec.msgs":"Messages","lb.anchor":"Conversation starts at","an.top":"Top","an.bottom":"Bottom (like the real app)","lb.addMsg":"+ Message","lb.addDate":"+ Date line","lb.clear":"Clear",
   "lb.msgHint":"The timestamp shows only on the last message of a run. Consecutive messages from the same person share one profile picture.",
   "sec.export":"Mockup & export","lb.mock":"iPhone mockup","lb.mockColor":"Device color","lb.outbg":"Outer background","out.none":"Transparent","out.color":"Solid","out.image":"Image","lb.pad":"Padding","lb.ratio":"Canvas ratio","rt.auto":"Auto",
@@ -523,7 +529,7 @@ const S = {
     kind:"me", name:"정스텔라", img:null,
     music:{on:true, title:"Kirari", artist:"Fujii Kaze", align:"right", x:null, y:151, w:189, h:33},
     today:{on:true, n:24, align:"right", x:null, y:193, w:109, h:43},
-    editLabel:"", statusMsg:null, chipDark:false, bg:{same:true, mode:"image", color:"#5B6773", img:null, fit:{zoom:100, ox:0, oy:0}},
+    editLabel:"", statusMsg:null, statusInk:"auto", chipDark:false, bg:{same:true, mode:"image", color:"#5B6773", img:null, fit:{zoom:100, ox:0, oy:0}},
     grid:{on:true, tiles:[{img:null,label:""},{img:null,label:""},{img:null,label:""},
                           {img:null,label:""},{img:null,label:""},{img:null,label:""}]},
     notice:{on:true, text:"친구에게만 게시물 공개 중이에요."},
@@ -1109,6 +1115,17 @@ function clipCover(g,bm,x,y,w,h,r){
   g.save(); rr(g,x,y,w,h,r==null?0:r); g.clip(); coverDraw(g,bm,x,y,w,h); g.restore();
 }
 function tw(g,t,font){ g.font = font; return g.measureText(t).width; }
+/* 도형 안을 파내야 할 때(destination-out) 쓰는 임시 캔버스.
+   본 캔버스에서 바로 파내면 이미 그려둔 배경까지 뚫려버림 */
+function offscreen(w, h, scale, drawFn){
+  const c = document.createElement("canvas");
+  c.width  = Math.max(1, Math.ceil(w*scale));
+  c.height = Math.max(1, Math.ceil(h*scale));
+  const q = c.getContext("2d");
+  q.setTransform(scale, 0, 0, scale, 0, 0);
+  drawFn(q);
+  return c;
+}
 
 /* 한글은 글자 단위, 영문은 단어 단위로 줄바꿈 */
 function wrapText(g, text, maxW, font){
@@ -1194,22 +1211,26 @@ function drawStatusBar(g, W, topH, color){
   else { g.textAlign = "center"; g.fillText(S.time, W*0.152, cy); timeRight = W*0.152 + tWid/2; }
   g.textAlign = "left";
   if(S.silent){                                  // 무음(벨에 사선) — 실측: 지름 15, 시각 오른쪽에서 18
-    const q = 1.32, bx = timeRight + 18, by = cy - 0.5;
-    g.fillStyle = color; g.lineJoin = "round";
-    g.beginPath();
-    g.moveTo(bx-5.6*q, by+3.2*q);
-    g.quadraticCurveTo(bx-4.3*q, by+1.4*q, bx-4.3*q, by-1.2*q);
-    g.quadraticCurveTo(bx-4.3*q, by-5.9*q, bx, by-5.9*q);
-    g.quadraticCurveTo(bx+4.3*q, by-5.9*q, bx+4.3*q, by-1.2*q);
-    g.quadraticCurveTo(bx+4.3*q, by+1.4*q, bx+5.6*q, by+3.2*q);
-    g.closePath(); g.fill();
-    g.beginPath(); g.arc(bx, by+4.3*q, 2.0*q, 0, Math.PI); g.fill();
-    g.save(); g.globalCompositeOperation = "destination-out";
-    g.lineWidth = 3.0*q; g.lineCap = "round";
-    g.beginPath(); g.moveTo(bx-7.6*q, by-7.2*q); g.lineTo(bx+7.6*q, by+7.2*q); g.stroke();
-    g.restore();
-    g.strokeStyle = color; g.lineWidth = 1.7*q; g.lineCap = "round";
-    g.beginPath(); g.moveTo(bx-6.9*q, by-6.5*q); g.lineTo(bx+6.9*q, by+6.5*q); g.stroke();
+    const z = 1.32, SZ = 26, bcx = timeRight + 18, bcy = cy - 0.5;
+    const bell = offscreen(SZ, SZ, 4, q=>{
+      const x = SZ/2, y = SZ/2;
+      q.fillStyle = color; q.lineJoin = "round";
+      q.beginPath();
+      q.moveTo(x-5.6*z, y+3.2*z);
+      q.quadraticCurveTo(x-4.3*z, y+1.4*z, x-4.3*z, y-1.2*z);
+      q.quadraticCurveTo(x-4.3*z, y-5.9*z, x, y-5.9*z);
+      q.quadraticCurveTo(x+4.3*z, y-5.9*z, x+4.3*z, y-1.2*z);
+      q.quadraticCurveTo(x+4.3*z, y+1.4*z, x+5.6*z, y+3.2*z);
+      q.closePath(); q.fill();
+      q.beginPath(); q.arc(x, y+4.3*z, 2.0*z, 0, Math.PI); q.fill();
+      q.globalCompositeOperation = "destination-out";
+      q.lineWidth = 3.0*z; q.lineCap = "round";
+      q.beginPath(); q.moveTo(x-7.6*z, y-7.2*z); q.lineTo(x+7.6*z, y+7.2*z); q.stroke();
+      q.globalCompositeOperation = "source-over";
+      q.strokeStyle = color; q.lineWidth = 1.7*z;
+      q.beginPath(); q.moveTo(x-6.9*z, y-6.5*z); q.lineTo(x+6.9*z, y+6.5*z); q.stroke();
+    });
+    g.drawImage(bell, bcx-SZ/2, bcy-SZ/2, SZ, SZ);
   }
   // 신호 4칸
   let x = W - 87;
@@ -1224,24 +1245,29 @@ function drawStatusBar(g, W, topH, color){
   g.beginPath(); g.arc(wx, wy-0.6, .9, 0, 7); g.fill();
   // 배터리
   const bx = W - 44, by = cy - 5.6, bw = 25, bh = 11.6;
-  g.globalAlpha = .35; g.lineWidth = 1.1; g.strokeStyle = color;
+  /* 테두리·꼭지는 신호/와이파이/시각과 같은 색으로 통일 */
+  g.globalAlpha = 1; g.strokeStyle = color; g.lineCap = "round";
+  g.lineWidth = 1.2;
   rr(g, bx, by, bw, bh, 3.5); g.stroke();
+  g.lineWidth = 2.2;
+  g.beginPath(); g.moveTo(bx+bw+1.6, by+bh/2-1.9); g.lineTo(bx+bw+1.6, by+bh/2+1.9); g.stroke();
   g.globalAlpha = 1;
-  g.beginPath(); g.moveTo(bx+bw+1.6, by+bh/2-1.9); g.lineTo(bx+bw+1.6, by+bh/2+1.9); g.lineWidth=2.2; g.stroke();
   const lvl = clamp(S.batt,0,100)/100;
   const fillW = Math.max(2, (bw-3.4)*lvl);
-  g.fillStyle = S.charging ? "#3ED66B" : (S.batt <= 20 ? "#FF3B30" : color);
-  rr(g, bx+1.7, by+1.7, fillW, bh-3.4, 2.2); g.fill();
-  if(S.charging){
-    // 번개 — 채움 위에 파내기
-    g.save(); g.globalCompositeOperation = "destination-out";
-    const lx = bx+bw/2, ly = by+bh/2;
-    g.beginPath();
-    g.moveTo(lx+1.7, ly-4.4); g.lineTo(lx-2.6, ly+0.7); g.lineTo(lx-0.2, ly+0.7);
-    g.lineTo(lx-1.5, ly+4.6); g.lineTo(lx+2.7, ly-0.6); g.lineTo(lx+0.3, ly-0.6);
-    g.closePath(); g.fill();
-    g.restore();
-  }
+  const fillCol = S.charging ? "#3ED66B" : (S.batt <= 20 ? "#FF3B30" : color);
+  const bat = offscreen(bw, bh, 4, q=>{
+    q.fillStyle = fillCol;
+    rr(q, 1.7, 1.7, fillW, bh-3.4, 2.2); q.fill();
+    if(S.charging){                      // 번개는 채움에서 파내서 뒤 배경이 비치게
+      q.globalCompositeOperation = "destination-out";
+      const lx = bw/2, ly = bh/2;
+      q.beginPath();
+      q.moveTo(lx+1.7, ly-4.4); q.lineTo(lx-2.6, ly+0.7); q.lineTo(lx-0.2, ly+0.7);
+      q.lineTo(lx-1.5, ly+4.6); q.lineTo(lx+2.7, ly-0.6); q.lineTo(lx+0.3, ly-0.6);
+      q.closePath(); q.fill();
+    }
+  });
+  g.drawImage(bat, bx, by, bw, bh);
 }
 function icoChevron(g,x,y,color){
   g.strokeStyle=color; g.lineWidth=2.1; g.lineCap="round"; g.lineJoin="round";
@@ -1913,6 +1939,25 @@ function dots3(g,cx,cy,r,gap,color){
   g.fillStyle = color;
   for(let i=-1;i<=1;i++){ g.beginPath(); g.arc(cx+i*gap, cy, r, 0, 7); g.fill(); }
 }
+/* 지금까지 그려진 캔버스에서 특정 영역의 평균 밝기를 잼 (0~1) */
+function areaLum(g, x, y, w, h){
+  try{
+    const t = g.getTransform();
+    const dx = Math.max(0, Math.round(t.a*x + t.e)), dy = Math.max(0, Math.round(t.d*y + t.f));
+    const dw = Math.max(1, Math.round(t.a*w)), dh = Math.max(1, Math.round(t.d*h));
+    const img = g.getImageData(dx, dy, dw, dh).data;
+    const total = dw*dh;
+    const stride = Math.max(1, Math.floor(total/600));
+    let sum = 0, n = 0;
+    for(let i = 0; i < total; i += stride){
+      const o = i*4;
+      const a = img[o+3]/255;
+      sum += (0.2126*img[o] + 0.7152*img[o+1] + 0.0722*img[o+2])/255 * a + (1-a);
+      n++;
+    }
+    return n ? sum/n : 0;
+  }catch(e){ return 0; }
+}
 function drawProfileScreen(g, D, opts){
   const p = pal(), W = D.w, H = D.h, P = S.prof;
   const k = W/440;                                    // 440pt 기준으로 잰 값을 화면폭에 맞춤
@@ -1948,7 +1993,12 @@ function drawProfileScreen(g, D, opts){
   gd.addColorStop(0,"rgba(0,0,0,0)"); gd.addColorStop(1,"rgba(0,0,0,.52)");
   g.fillStyle = gd; g.fillRect(0, profBottom - 150*k, W, gridTop - (profBottom - 150*k));
 
-  drawStatusBar(g, W, topH, P.statusDark ? "#191919" : "#FFFFFF");
+  /* 상태바 글자색 — 자동이면 상단 배경 밝기를 재서 결정 */
+  let inkDark = P.statusInk === "dark";
+  if(P.statusInk === "auto" || P.statusInk == null){
+    inkDark = areaLum(g, 0, 0, W, Math.max(24*k, topH)) > 0.62;
+  }
+  drawStatusBar(g, W, topH, inkDark ? "#191919" : "#FFFFFF");
 
   /* ── 상단 버튼 ── (440×956 캡쳐 실측: 지름 44, y=62, 오른쪽 여백 20, 알약↔원 간격 12.3) */
   const btnD = 44*k, btnY = Math.max(10*k, topH);
@@ -2504,7 +2554,7 @@ $("#pfBgColor").addEventListener("input", e=>{ const B=PF().bg; B.color=e.target
 $("#pfBgZoom").addEventListener("input", e=>{ PF().bg.fit.zoom=+e.target.value; $("#vPfBgZoom").textContent=e.target.value+"%"; render(); });
 $("#pfBgX").addEventListener("input", e=>{ PF().bg.fit.ox=+e.target.value; render(); });
 $("#pfBgY").addEventListener("input", e=>{ PF().bg.fit.oy=+e.target.value; render(); });
-$("#pfStatusDark").addEventListener("change", e=>{ PF().statusDark=e.target.checked; render(); });
+chips("#chStatusInk", v=>{ PF().statusInk=v; render(); });
 $("#pfEdit").addEventListener("input", e=>{ PF().editLabel=e.target.value; render(); });
 $("#pfMusicY").addEventListener("input", e=>{ PF().music.y=+e.target.value; $("#vMusicY").textContent=e.target.value; render(); });
 $("#pfMusicW").addEventListener("input", e=>{ PF().music.w=+e.target.value; $("#vMusicW").textContent=e.target.value; render(); });
@@ -2843,7 +2893,7 @@ function syncUI(){
   setV("#pfBtn1", P.btn[0] || ""); setV("#pfBtn2", P.btn[1] || "");
   setC("#pfMusicOn", P.music.on); setC("#pfTodayOn", P.today.on);
   setC("#pfGridOn", P.grid.on);   setC("#pfNoticeOn", P.notice.on);
-  setC("#pfStatusDark", P.statusDark); setC("#pfChipDark", P.chipDark);
+  setChip("#chStatusInk", P.statusInk || "auto"); setC("#pfChipDark", P.chipDark);
   $("#pfImgPrev") && (P.imgU ? ($("#pfImgPrev").src = P.imgU) : $("#pfImgPrev").removeAttribute("src"));
   $("#rPfBgImg").style.display = P.bg.same ? "none" : "";
   toggleOutRows(); toggleRows(); syncChipUI();
