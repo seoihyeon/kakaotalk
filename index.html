@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>카카오톡 메이커 v16</title>
+<title>카카오톡 메이커 v17</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -121,7 +121,7 @@ input[type=range]{width:100%;accent-color:#191919}
 
   <div id="panel">
     <div id="panelHead">
-      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v16</span>
+      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v17</span>
       <div class="langbox">
         <button id="langKo" class="on">한국어</button><button id="langEn">English</button>
       </div>
@@ -593,10 +593,32 @@ function urlToBitmap(u){
     im.src = u;
   });
 }
-/* 업로드한 이미지는 비트맵과 data URL을 같이 보관 — JSON 저장에 쓰임 */
+/* 업로드한 이미지는 비트맵과 data URL을 같이 보관 — data URL은 JSON 저장용.
+   비트맵은 createImageBitmap(file)로 바로 만든다. data URL을 거쳐 <img>로 만들면
+   HEIC나 아주 큰 사진에서 조용히 실패하는 브라우저가 있음 */
 async function readImg(file){
-  const u = await fileToDataURL(file);
-  const bm = await urlToBitmap(u);
+  let bm = null;
+  try{ bm = await createImageBitmap(file); }catch(e){}
+  let u = null;
+  try{ u = await fileToDataURL(file); }catch(e){}
+  if(!bm && u) bm = await urlToBitmap(u);
+  if(!bm){
+    alert(LANG==="ko"
+      ? "이 이미지는 브라우저가 열지 못했습니다. 아이폰 사진이면 HEIC일 수 있어요 — JPG나 PNG로 바꿔서 넣어주세요."
+      : "The browser could not read this image. If it came from an iPhone it may be HEIC — please convert it to JPG or PNG.");
+    return { bm:null, u:null };
+  }
+  /* JSON에 넣기엔 너무 큰 사진은 줄여서 보관 */
+  if(u && u.length > 1200000){
+    const MAX = 1400;
+    const sc = Math.min(1, MAX/Math.max(bm.width, bm.height));
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(bm.width*sc));
+    c.height = Math.max(1, Math.round(bm.height*sc));
+    c.getContext("2d").drawImage(bm, 0, 0, c.width, c.height);
+    try{ u = c.toDataURL(/png/i.test(file.type) ? "image/png" : "image/jpeg", 0.88); }catch(e){}
+    c.width = c.height = 0;
+  }
   return { bm, u };
 }
 async function bytesToBitmap(bytes, mime){
@@ -2095,7 +2117,8 @@ function drawProfileScreen(g, D, opts){
   /* ── 프로필 사진 · 이름 ── */
   const pxL = 16*k;
   const who = { name:P.name, img:P.img };
-  if(P.img) clipCover(g, P.img, pxL, profBottom-profSize, profSize, profSize, profSize/2);
+  /* 사진을 넣어도 원이 아니라 기본 프로필과 같은 둥근 네모(변의 40%) */
+  if(P.img) clipCover(g, P.img, pxL, profBottom-profSize, profSize, profSize, profSize*0.40);
   else drawProfile(g, who, pxL, profBottom-profSize, profSize, p);
   g.fillStyle = "#fff"; g.font = f(27*k,700);
   g.textAlign = "left"; g.textBaseline = "alphabetic";
