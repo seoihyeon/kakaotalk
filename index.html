@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>카카오톡 메이커 v13</title>
+<title>카카오톡 메이커 v14</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -121,7 +121,7 @@ input[type=range]{width:100%;accent-color:#191919}
 
   <div id="panel">
     <div id="panelHead">
-      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v13</span>
+      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v14</span>
       <div class="langbox">
         <button id="langKo" class="on">한국어</button><button id="langEn">English</button>
       </div>
@@ -300,6 +300,7 @@ input[type=range]{width:100%;accent-color:#191919}
           <button data-v="friend" data-i18n="pf.friend">친구 프로필</button>
         </div>
         <div class="row" style="margin-top:10px"><label data-i18n="pf.name">이름</label><input type="text" id="pfName" class="grow"></div>
+        <div class="row"><label data-i18n="pf.status">상태메시지</label><input type="text" id="pfStatus" class="grow"></div>
         <div class="memb">
           <img class="mini" id="pfImgPrev" alt="">
           <span class="btn filebtn sm grow" style="text-align:center"><span data-i18n="pf.photo">프로필 사진</span><input type="file" id="pfImg" accept="image/*"></span>
@@ -415,6 +416,11 @@ input[type=range]{width:100%;accent-color:#191919}
           <button data-v="full" data-i18n="sv.full">대화 전체 (길게)</button>
         </div>
         <button class="btn pri full" id="save" style="margin-top:12px" data-i18n="lb.save">PNG로 저장</button>
+        <div class="row" style="margin-top:8px">
+          <button class="btn grow" id="expJson" data-i18n="lb.expJson">설정 저장 (JSON)</button>
+          <span class="btn filebtn grow" style="text-align:center"><span data-i18n="lb.impJson">설정 불러오기</span><input type="file" id="impJson" accept=".json,application/json"></span>
+        </div>
+        <p class="hint" data-i18n="lb.jsonHint">올린 사진까지 같이 저장됩니다. 테마(.ktheme)는 따로 다시 열어주세요.</p>
         <p class="hint" data-i18n="lb.saveHint">폰에서는 저장을 누르면 이미지가 화면에 뜹니다. 길게 눌러 "사진에 저장"을 고르세요.</p>
       </div>
     </details>
@@ -446,11 +452,11 @@ const I18N = {
   "sec.look":"Background & bubbles","lb.bg":"Chat background","bg.default":"Default","bg.color":"Solid","bg.image":"Image","lb.color":"Color","lb.file":"File","lb.pick":"Choose image","lb.zoom":"Zoom","lb.posx":"Horizontal","lb.posy":"Vertical","lb.fitReset":"Reset position & zoom",
   "lb.bubbleColor":"Bubble colors","lb.send":"Sent","lb.recv":"Received","lb.bgtext":"fill / text","lb.radius":"Corner","lb.tail":"Bubble tail","lb.unread":"Show unread count","lb.unreadC":"Unread color","lb.fontsize":"Text size",
   "sec.header":"Status bar & header","lb.statusbar":"Show status bar","lb.time":"Time","lb.battery":"Battery","lb.charging":"Charging","lb.silent":"Silent mode icon","lb.title":"Room name","lb.people":"Members","lb.searchIco":"Search icon","lb.menuIco":"Menu (≡) icon","lb.inputbar":"Show input bar","lb.inputTxt":"Input placeholder",
-  "sec.tabs":"Tab bar","tb.hint":"Unread counts. 0 hides the badge.","tb.t1":"Friends","tb.t2":"Chats","tb.t3":"Open chat","tb.t4":"Shop","tb.t5":"More","tb.dot":"Red dot on More","sec.friendlist":"Friends screen","fr.people":"Friends (participants)","fr.showMe":"Show my profile row","fr.label":"Section title","fr.fav":"Favorites section","fr.favN":"Favorites count","sec.prof":"Profile screen","pf.kind":"Type","pf.me":"My profile","pf.friend":"Friend's profile","pf.name":"Name","pf.photo":"Profile photo","pf.bg":"Cover","pf.bgImage":"Image","pf.bgColor":"Solid","pf.bgSame":"Same as chat room","pf.statusDark":"Dark status bar text (for light covers)","pf.editLabel":"Edit button","pf.center":"Center","pf.chipDark":"Darker chips (for light covers)","pf.chipW":"Chip width","pf.chipX":"Horizontal","pf.chipY":"Vertical","pf.dragHint":"You can also drag the chips right on the preview.","pf.music":"Music chip","pf.song":"Song","pf.artist":"Artist","pf.right":"Right","pf.left":"Left","pf.today":"TODAY chip (my profile only)","pf.todayN":"Visits","pf.btn1":"Button 1","pf.btn2":"Button 2","pf.grid":"Post grid","pf.notice":"Bottom visibility notice","sec.people":"Participants","lb.me":"Me (right side)","lb.others":"Others","lb.photo":"Photo","lb.addMemb":"+ Add participant","lb.status":"Status message",
+  "sec.tabs":"Tab bar","tb.hint":"Unread counts. 0 hides the badge.","tb.t1":"Friends","tb.t2":"Chats","tb.t3":"Open chat","tb.t4":"Shop","tb.t5":"More","tb.dot":"Red dot on More","sec.friendlist":"Friends screen","fr.people":"Friends (participants)","fr.showMe":"Show my profile row","fr.label":"Section title","fr.fav":"Favorites section","fr.favN":"Favorites count","sec.prof":"Profile screen","pf.kind":"Type","pf.me":"My profile","pf.friend":"Friend's profile","pf.name":"Name","pf.status":"Status message","pf.photo":"Profile photo","pf.bg":"Cover","pf.bgImage":"Image","pf.bgColor":"Solid","pf.bgSame":"Same as chat room","pf.statusDark":"Dark status bar text (for light covers)","pf.editLabel":"Edit button","pf.center":"Center","pf.chipDark":"Darker chips (for light covers)","pf.chipW":"Chip width","pf.chipX":"Horizontal","pf.chipY":"Vertical","pf.dragHint":"You can also drag the chips right on the preview.","pf.music":"Music chip","pf.song":"Song","pf.artist":"Artist","pf.right":"Right","pf.left":"Left","pf.today":"TODAY chip (my profile only)","pf.todayN":"Visits","pf.btn1":"Button 1","pf.btn2":"Button 2","pf.grid":"Post grid","pf.notice":"Bottom visibility notice","sec.people":"Participants","lb.me":"Me (right side)","lb.others":"Others","lb.photo":"Photo","lb.addMemb":"+ Add participant","lb.status":"Status message",
   "sec.msgs":"Messages","lb.anchor":"Conversation starts at","an.top":"Top","an.bottom":"Bottom (like the real app)","lb.addMsg":"+ Message","lb.addDate":"+ Date line","lb.clear":"Clear",
   "lb.msgHint":"The timestamp shows only on the last message of a run. Consecutive messages from the same person share one profile picture.",
   "sec.export":"Mockup & export","lb.mock":"iPhone mockup","lb.mockColor":"Device color","lb.outbg":"Outer background","out.none":"Transparent","out.color":"Solid","out.image":"Image","lb.pad":"Padding","lb.ratio":"Canvas ratio","rt.auto":"Auto",
-  "lb.saveRange":"Save range","sv.screen":"Screen as shown","sv.full":"Whole conversation (tall)","lb.save":"Save as PNG",
+  "lb.saveRange":"Save range","sv.screen":"Screen as shown","sv.full":"Whole conversation (tall)","lb.save":"Save as PNG","lb.expJson":"Save settings (JSON)","lb.impJson":"Load settings","lb.jsonHint":"Uploaded photos are saved too. A .ktheme file has to be opened again separately.",
   "lb.saveHint":"On a phone the image appears on screen — press and hold it, then choose \"Save to Photos\".",
   "ov.hint":"Press and hold the image, then \"Save to Photos\"","ov.close":"Close"
  }
@@ -485,7 +491,7 @@ const PAL = {
     headBg:"#B2C7DA", headTx:"#191919", inputBg:"#FFFFFF", inputTx:"#191919", inputPh:"#B0B6BC",
     listBg:"#FFFFFF", listTx:"#191919", listSub:"#8A9099", listTime:"#A6ACB4", tabBg:"#F9F9FA",
     tabIcon:"#B9BEC5", tabIconOn:"#191919", divider:"#EFEFF1", sectionTx:"#8A9099",
-    dateBg:"rgba(0,0,0,.14)", dateTx:"#FFFFFF", statusTx:"#191919", profBg:"#DCDFE3"
+    dateBg:"rgba(0,0,0,.14)", dateTx:"#FFFFFF", statusTx:"#191919", profBg:"#A5B5E4", profIcon:"#CDD6F0"
   },
   dark:{
     chatBg:"#1A1A1A", sendBg:"#FEE500", sendTx:"#191919", recvBg:"#333333", recvTx:"#F2F2F2",
@@ -493,7 +499,7 @@ const PAL = {
     headBg:"#1A1A1A", headTx:"#F2F2F2", inputBg:"#2A2A2A", inputTx:"#F2F2F2", inputPh:"#7C8288",
     listBg:"#1A1A1A", listTx:"#F2F2F2", listSub:"#8B9097", listTime:"#7C8288", tabBg:"#1A1A1A",
     tabIcon:"#6E7379", tabIconOn:"#F2F2F2", divider:"#2E2E2E", sectionTx:"#8B9097",
-    dateBg:"rgba(255,255,255,.14)", dateTx:"#E8E8E8", statusTx:"#F2F2F2", profBg:"#3A3A3A"
+    dateBg:"rgba(255,255,255,.14)", dateTx:"#E8E8E8", statusTx:"#F2F2F2", profBg:"#A5B5E4", profIcon:"#CDD6F0"
   }
 };
 
@@ -517,7 +523,7 @@ const S = {
     kind:"me", name:"정스텔라", img:null,
     music:{on:true, title:"Kirari", artist:"Fujii Kaze", align:"right", x:null, y:151, w:189, h:33},
     today:{on:true, n:24, align:"right", x:null, y:193, w:109, h:43},
-    editLabel:"", chipDark:false, bg:{same:true, mode:"image", color:"#5B6773", img:null, fit:{zoom:100, ox:0, oy:0}},
+    editLabel:"", statusMsg:null, chipDark:false, bg:{same:true, mode:"image", color:"#5B6773", img:null, fit:{zoom:100, ox:0, oy:0}},
     grid:{on:true, tiles:[{img:null,label:""},{img:null,label:""},{img:null,label:""},
                           {img:null,label:""},{img:null,label:""},{img:null,label:""}]},
     notice:{on:true, text:"친구에게만 게시물 공개 중이에요."},
@@ -568,6 +574,24 @@ const autoTx = bg => lum(bg) > .55 ? "#191919" : "#FFFFFF";
 
 async function fileToBitmap(file){
   try{ return await createImageBitmap(file); }catch(e){ return null; }
+}
+function fileToDataURL(file){
+  return new Promise(res=>{ const fr = new FileReader(); fr.onload = ()=>res(fr.result); fr.onerror = ()=>res(null); fr.readAsDataURL(file); });
+}
+function urlToBitmap(u){
+  return new Promise(res=>{
+    if(!u) return res(null);
+    const im = new Image();
+    im.onload = ()=> createImageBitmap(im).then(res).catch(()=>res(null));
+    im.onerror = ()=> res(null);
+    im.src = u;
+  });
+}
+/* 업로드한 이미지는 비트맵과 data URL을 같이 보관 — JSON 저장에 쓰임 */
+async function readImg(file){
+  const u = await fileToDataURL(file);
+  const bm = await urlToBitmap(u);
+  return { bm, u };
 }
 async function bytesToBitmap(bytes, mime){
   try{ return await createImageBitmap(new Blob([bytes],{type:mime||"image/png"})); }
@@ -1300,13 +1324,13 @@ function icoOpenChat(g,x,y,s,color,filled){
   g.stroke();
 }
 function drawProfile(g, member, x, y, size, p){
-  const r = size*0.355;
+  const r = size*0.40;   /* 실측: 카톡 기본 프로필은 변 길이의 40% */
   const bm = member && member.img;
   if(bm){ clipCover(g, bm, x, y, size, size, r); return; }
   const th = slotOf("prof");
   if(th){ g.save(); rr(g,x,y,size,size,r); g.clip(); coverDraw(g, th.bm, x, y, size, size); g.restore(); return; }
   g.fillStyle = p.profBg; rr(g,x,y,size,size,r); g.fill();
-  icoPerson(g, x+size/2, y+size*0.50, size*0.72, S.dark?"#5A5F66":"#FFFFFF", true);
+  icoPerson(g, x+size/2, y+size*0.50, size*0.72, p.profIcon || "#FFFFFF", true);
 }
 
 /* ================================================================
@@ -1908,10 +1932,16 @@ function drawProfileScreen(g, D, opts){
   }
 
   /* 레이아웃 기준선 */
-  const gridTop = Math.round(H * 0.707);
-  const barH = 44*k, barTop = gridTop - 18*k - barH;
-  const nameBase = barTop - 20*k;
-  const profSize = 66*k, profBottom = nameBase - 52*k;
+  /* 실측(440×956): 그리드 시작 637.7, 액션바 568~613(높이 45),
+     이름 기준선 544(상태메시지 없을 때) / 521.3+상태 543.3(있을 때),
+     프로필 64 정사각, 왼쪽 16, 아래끝은 이름 기준선에서 37 위 */
+  const gridTop = Math.round(H * 0.667);
+  const barH = 45*k, barTop = gridTop - 24.7*k - barH;
+  const stMsg = ((P.statusMsg != null ? P.statusMsg : S.statusMsg) || "").trim();
+  const statusBase = barTop - 24.7*k;
+  const nameBase   = stMsg ? statusBase - 22*k : barTop - 24*k;
+  const profSize   = 64*k;
+  const profBottom = nameBase - 37*k;
 
   /* 아래쪽 어둡게 */
   const gd = g.createLinearGradient(0, profBottom - 150*k, 0, gridTop);
@@ -2013,16 +2043,23 @@ function drawProfileScreen(g, D, opts){
   }
 
   /* ── 프로필 사진 · 이름 ── */
-  const pxL = 14*k;
+  const pxL = 16*k;
   const who = { name:P.name, img:P.img };
   if(P.img) clipCover(g, P.img, pxL, profBottom-profSize, profSize, profSize, profSize/2);
-  else drawProfile(g, who, pxL + 4*k, profBottom-profSize+4*k, profSize-8*k, p);
-  g.fillStyle = "#fff"; g.font = f(24*k,700);
+  else drawProfile(g, who, pxL, profBottom-profSize, profSize, p);
+  g.fillStyle = "#fff"; g.font = f(27*k,700);
   g.textAlign = "left"; g.textBaseline = "alphabetic";
   g.save();
-  g.beginPath(); g.rect(0, nameBase-34*k, W-20*k, 44*k); g.clip();
+  g.beginPath(); g.rect(0, nameBase-36*k, W-20*k, 46*k); g.clip();
   g.fillText(P.name||"", 20*k, nameBase);
   g.restore();
+  if(stMsg){
+    g.fillStyle = "rgba(255,255,255,.88)"; g.font = f(14*k,400);
+    g.save();
+    g.beginPath(); g.rect(0, statusBase-16*k, W-20*k, 22*k); g.clip();
+    g.fillText(stMsg, 20*k, statusBase);
+    g.restore();
+  }
 
   /* ── 액션 바 ── */
   const bx = 16*k, bw = W - 32*k;
@@ -2319,8 +2356,9 @@ function toggleOutRows(){
   ["#rOutImg","#rOutZ","#rOutX","#rOutY"].forEach(id => $(id).style.display = on);
 }
 $("#fOut").addEventListener("change", async e=>{ const fl=e.target.files[0]; if(!fl) return;
-  S.outImage = await fileToBitmap(fl); S.outMode="image"; setChip("#chOut","image"); toggleOutRows(); render(); });
-$("#outImgClear").addEventListener("click", ()=>{ S.outImage=null; render(); });
+  const R = await readImg(fl); S.outImage = R.bm; S.outImageU = R.u;
+  S.outMode="image"; setChip("#chOut","image"); toggleOutRows(); render(); });
+$("#outImgClear").addEventListener("click", ()=>{ S.outImage=null; S.outImageU=null; render(); });
 $("#rOutZoom").addEventListener("input", e=>{ S.outFit.zoom=+e.target.value; $("#vOutZoom").textContent=e.target.value+"%"; render(); });
 $("#rOutXs").addEventListener("input", e=>{ S.outFit.ox=+e.target.value; render(); });
 $("#rOutYs").addEventListener("input", e=>{ S.outFit.oy=+e.target.value; render(); });
@@ -2343,8 +2381,9 @@ function toggleRows(){
 $("#cBg").addEventListener("input", e=>{ S.bgColor=e.target.value; $("#cBgHex").value=e.target.value; render(); });
 $("#cBgHex").addEventListener("input", e=>{ if(isHex(e.target.value)){ S.bgColor=e.target.value; $("#cBg").value=e.target.value; render(); } });
 $("#fBg").addEventListener("change", async e=>{ const fl=e.target.files[0]; if(!fl) return;
-  S.bgImage = await fileToBitmap(fl); S.bgMode="image"; setChip("#chBg","image"); toggleRows(); render(); });
-$("#bgImgClear").addEventListener("click", ()=>{ S.bgImage=null; render(); });
+  const R = await readImg(fl); S.bgImage = R.bm; S.bgImageU = R.u;
+  S.bgMode="image"; setChip("#chBg","image"); toggleRows(); render(); });
+$("#bgImgClear").addEventListener("click", ()=>{ S.bgImage=null; S.bgImageU=null; render(); });
 $("#rBgZoom").addEventListener("input", e=>{ S.bgFit.zoom=+e.target.value; $("#vBgZoom").textContent=S.bgFit.zoom+"%"; render(); });
 $("#rBgX").addEventListener("input", e=>{ S.bgFit.ox=+e.target.value; render(); });
 $("#rBgY").addEventListener("input", e=>{ S.bgFit.oy=+e.target.value; render(); });
@@ -2385,13 +2424,15 @@ $("#cOut").addEventListener("input", e=>{ S.outColor=e.target.value;
   if(S.outMode==="none"){ S.outMode="color"; setChip("#chOut","color"); toggleOutRows(); } render(); });
 $("#rPad").addEventListener("input", e=>{ S.pad=+e.target.value; $("#vPad").textContent=S.pad; render(); });
 $("#save").addEventListener("click", save);
+$("#expJson").addEventListener("click", exportSettings);
+$("#impJson").addEventListener("change", e=>{ const fl=e.target.files[0]; if(fl) importSettings(fl); e.target.value=""; });
 $("#ovClose").addEventListener("click", ()=>$("#ov").classList.remove("on"));
 
 /* ---- 참여자 ---- */
 $("#tMeName").addEventListener("input", e=>{ S.me.name=e.target.value; buildMsgEditor(); render(); });
 document.querySelector('input[data-who="me"]').addEventListener("change", async e=>{
   const fl=e.target.files[0]; if(!fl) return;
-  S.me.img = await fileToBitmap(fl); $("#meImg").src = URL.createObjectURL(fl); render();
+  const R = await readImg(fl); S.me.img = R.bm; S.me.imgU = R.u; $("#meImg").src = R.u; render();
 });
 document.querySelectorAll(".addMemb").forEach(btn => btn.addEventListener("click", ()=>{
   S.members.push({ name:(LANG==="ko"?"참여자 ":"Member ")+(S.members.length+1), img:null });
@@ -2411,11 +2452,11 @@ function buildMembersInto(box){
     name.value = mb.name;
     const st = d.querySelector("input.st"); st.value = mb.status || "";
     st.addEventListener("input", e=>{ mb.status = e.target.value; render(); });
-    if(mb._url) img.src = mb._url;
+    if(mb.imgU) img.src = mb.imgU;
     name.addEventListener("input", e=>{ mb.name=e.target.value; buildMsgEditor(); render(); });
     d.querySelector('input[type=file]').addEventListener("change", async e=>{
       const fl=e.target.files[0]; if(!fl) return;
-      mb.img = await fileToBitmap(fl); mb._url = URL.createObjectURL(fl); img.src = mb._url; render();
+      const R = await readImg(fl); mb.img = R.bm; mb.imgU = R.u; img.src = R.u; buildMembers(); render();
     });
     d.querySelector("button").addEventListener("click", ()=>{
       if(S.members.length<=1) return;
@@ -2455,9 +2496,9 @@ chips("#chPfBg", v=>{
   render();
 });
 $("#pfBgImg").addEventListener("change", async e=>{ const fl=e.target.files[0]; if(!fl) return;
-  const B=PF().bg; B.img = await fileToBitmap(fl); B.same=false; B.mode="image";
+  const R = await readImg(fl); const B=PF().bg; B.img = R.bm; B.imgU = R.u; B.same=false; B.mode="image";
   setChip("#chPfBg","image"); $("#rPfBgImg").style.display=""; render(); });
-$("#pfBgClear").addEventListener("click", ()=>{ PF().bg.img=null; render(); });
+$("#pfBgClear").addEventListener("click", ()=>{ PF().bg.img=null; PF().bg.imgU=null; render(); });
 $("#pfBgColor").addEventListener("input", e=>{ const B=PF().bg; B.color=e.target.value;
   if(B.same){ B.same=false; setChip("#chPfBg","color"); B.mode="color"; } render(); });
 $("#pfBgZoom").addEventListener("input", e=>{ PF().bg.fit.zoom=+e.target.value; $("#vPfBgZoom").textContent=e.target.value+"%"; render(); });
@@ -2470,9 +2511,10 @@ $("#pfMusicW").addEventListener("input", e=>{ PF().music.w=+e.target.value; $("#
 $("#pfTodayW").addEventListener("input", e=>{ PF().today.w=+e.target.value; $("#vTodayW").textContent=e.target.value; render(); });
 $("#pfTodayY").addEventListener("input", e=>{ PF().today.y=+e.target.value; $("#vTodayY").textContent=e.target.value; render(); });
 $("#pfName").addEventListener("input", e=>{ PF().name=e.target.value; render(); });
+$("#pfStatus").addEventListener("input", e=>{ PF().statusMsg=e.target.value; render(); });
 $("#pfImg").addEventListener("change", async e=>{ const fl=e.target.files[0]; if(!fl) return;
-  PF().img = await fileToBitmap(fl); $("#pfImgPrev").src = URL.createObjectURL(fl); render(); });
-$("#pfImgClear").addEventListener("click", ()=>{ PF().img=null; $("#pfImgPrev").removeAttribute("src"); render(); });
+  const R = await readImg(fl); PF().img = R.bm; PF().imgU = R.u; $("#pfImgPrev").src = R.u; render(); });
+$("#pfImgClear").addEventListener("click", ()=>{ PF().img=null; PF().imgU=null; $("#pfImgPrev").removeAttribute("src"); render(); });
 $("#pfMusicOn").addEventListener("change", e=>{ PF().music.on=e.target.checked; render(); });
 $("#pfSong").addEventListener("input", e=>{ PF().music.title=e.target.value; render(); });
 $("#pfArtist").addEventListener("input", e=>{ PF().music.artist=e.target.value; render(); });
@@ -2491,16 +2533,16 @@ function buildTiles(){
     d.innerHTML = '<label class="ph"><img alt=""><button class="x">×</button><input type="file" accept="image/*"></label>'
                 + '<input type="text" placeholder="'+(LANG==="ko"?"라벨":"label")+'">';
     const img = d.querySelector("img"), tx = d.querySelector('input[type=text]');
-    if(t._url) img.src = t._url; else img.removeAttribute("src");
+    if(t.imgU) img.src = t.imgU; else img.removeAttribute("src");
     tx.value = t.label||"";
     tx.addEventListener("input", e=>{ t.label=e.target.value; render(); });
     d.querySelector('input[type=file]').addEventListener("change", async e=>{
       const fl=e.target.files[0]; if(!fl) return;
-      t.img = await fileToBitmap(fl); t._url = URL.createObjectURL(fl); img.src = t._url; render();
+      const R = await readImg(fl); t.img = R.bm; t.imgU = R.u; img.src = R.u; render();
     });
     d.querySelector(".x").addEventListener("click", e=>{
       e.preventDefault(); e.stopPropagation();
-      t.img=null; t._url=null; img.removeAttribute("src"); render();
+      t.img=null; t.imgU=null; img.removeAttribute("src"); render();
     });
     box.appendChild(d);
   });
@@ -2548,7 +2590,7 @@ function buildMsgEditor(){
       tm.addEventListener("input", e=>{ m.time=e.target.value; render(); });
       d.querySelector('input[type=file]').addEventListener("change", async e=>{
         const fl=e.target.files[0]; if(!fl) return;
-        m.img = await fileToBitmap(fl);
+        const R = await readImg(fl); m.img = R.bm; m.imgU = R.u;
         if(m.type==="text"){ m.type="image"; typ.value="image"; }
         render();
       });
@@ -2704,39 +2746,115 @@ function switchLang(l){
 }
 
 /* ---- 초기화 ---- */
+/* ================================================================
+   설정 JSON 저장 / 불러오기
+   ================================================================ */
+function exportSettings(){
+  S.lang = LANG;
+  const json = JSON.stringify(S, (k,v)=>{
+    if(k.charAt(0) === "_") return undefined;          // 내부 캐시
+    if(k === "theme") return undefined;                // 테마 파일은 따로 불러오기
+    if(typeof ImageBitmap !== "undefined" && v instanceof ImageBitmap) return undefined;
+    return v;
+  }, 1);
+  const blob = new Blob([json], { type:"application/json" });
+  const u = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = u; a.download = "kakaotalk_maker_" + Date.now() + ".json"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(u), 4000);
+}
+/* data URL로 저장해둔 이미지를 다시 비트맵으로 */
+async function rehydrate(o){
+  if(!o || typeof o !== "object") return;
+  if(Array.isArray(o)){ for(const it of o) await rehydrate(it); return; }
+  for(const base of ["img","bgImage","outImage"]){
+    if((base+"U") in o || base in o) o[base] = o[base+"U"] ? await urlToBitmap(o[base+"U"]) : null;
+  }
+  for(const k of Object.keys(o)){
+    const v = o[k];
+    if(v && typeof v === "object" && !(typeof ImageBitmap !== "undefined" && v instanceof ImageBitmap)) await rehydrate(v);
+  }
+}
+async function importSettings(file){
+  let o;
+  try{ o = JSON.parse(await file.text()); }
+  catch(e){ alert(LANG==="ko" ? "설정 파일을 읽지 못했습니다." : "Could not read that settings file."); return; }
+  Object.keys(o).forEach(k => { if(k !== "theme" && k.charAt(0) !== "_") S[k] = o[k]; });
+  if(o.lang && o.lang !== LANG){ LANG = o.lang; applyLang(); }
+  await rehydrate(S);
+  syncUI(); buildMembers(); buildMsgEditor(); buildTiles();
+  S._pin = false; render();
+}
+
+/* ================================================================
+   상태값 → 패널 반영
+   ================================================================ */
+function syncUI(){
+  const P = S.prof;
+  const setV = (id,v)=>{ const el=$(id); if(el) el.value = v; };
+  const setC = (id,v)=>{ const el=$(id); if(el) el.checked = !!v; };
+  const setT = (id,v)=>{ const el=$(id); if(el) el.textContent = v; };
+
+  setChip("#chScreen", S.screen); setChip("#chKind", S.kind);
+  setChip("#chDark", S.dark ? "dark" : "light"); setChip("#chDevice", S.device);
+  setChip("#chBg", S.bgMode); setChip("#chOut", S.outMode);
+  setChip("#chRatio", S.outRatio); setChip("#chSaveMode", S.saveMode);
+  setChip("#chAnchor", S.anchor); setChip("#chProfKind", P.kind);
+  setChip("#chMusicAlign", P.music.align); setChip("#chTodayAlign", P.today.align);
+  setChip("#chPfBg", P.bg.same ? "same" : P.bg.mode);
+
+  setV("#cBg", S.bgColor); setV("#cBgHex", S.bgColor);
+  setV("#tTime", S.time); setV("#nBatt", S.batt);
+  setV("#tTitle", S.title); setV("#nCount", S.count);
+  setV("#tInput", S.inputPh); setV("#tMeName", S.me.name);
+  setV("#tStatusMsg", S.statusMsg);
+  setV("#rRadius", S.radius); setT("#vRadius", S.radius);
+  setV("#rFont", S.fontSize);  setT("#vFont", S.fontSize);
+  setV("#rPad", S.pad);        setT("#vPad", S.pad);
+  setV("#cMock", S.mockColor); setV("#cOut", S.outColor);
+  setV("#rOutZoom", S.outFit.zoom); setT("#vOutZoom", S.outFit.zoom+"%");
+  setV("#rOutXs", S.outFit.ox); setV("#rOutYs", S.outFit.oy);
+  setV("#rBgZoom", S.bgFit.zoom); setT("#vBgZoom", S.bgFit.zoom+"%");
+  setV("#rBgX", S.bgFit.ox); setV("#rBgY", S.bgFit.oy);
+  setC("#kStatus", S.status); setC("#kCharge", S.charging); setC("#kSilent", S.silent);
+  setC("#kSearch", S.search); setC("#kMenu", S.menu); setC("#kInput", S.inputBar);
+  setC("#kTail", S.tail); setC("#kUnreadOn", S.unreadOn); setC("#kMock", S.mock);
+  setV("#cUnread", S.unreadColor);
+  if(S.sendBg) setV("#cSend", S.sendBg);  if(S.sendTx) setV("#cSendT", S.sendTx);
+  if(S.recvBg) setV("#cRecv", S.recvBg);  if(S.recvTx) setV("#cRecvT", S.recvTx);
+  $("#meImg") && (S.me.imgU ? ($("#meImg").src = S.me.imgU) : $("#meImg").removeAttribute("src"));
+
+  document.querySelectorAll(".tbn").forEach(i => i.value = S.tabs.badges[+i.dataset.i]);
+  setC("#tbDot", S.tabs.moreDot);
+  setC("#frShowMe", S.friends.showMe); setV("#frLabel", S.friends.label);
+  setC("#frFavOn", S.friends.favOn);   setV("#frFavN", S.friends.favCount);
+
+  setV("#pfName", P.name); setV("#pfStatus", P.statusMsg == null ? "" : P.statusMsg);
+  setV("#pfEdit", P.editLabel || "");
+  setV("#pfSong", P.music.title); setV("#pfArtist", P.music.artist);
+  setV("#pfTodayN", P.today.n); setV("#pfNotice", P.notice.text);
+  setV("#pfBgColor", P.bg.color);
+  setV("#pfBgZoom", P.bg.fit.zoom); setT("#vPfBgZoom", P.bg.fit.zoom+"%");
+  setV("#pfBgX", P.bg.fit.ox); setV("#pfBgY", P.bg.fit.oy);
+  setV("#pfMusicY", P.music.y); setT("#vMusicY", P.music.y);
+  setV("#pfMusicW", P.music.w); setT("#vMusicW", P.music.w);
+  setV("#pfTodayY", P.today.y); setT("#vTodayY", P.today.y);
+  setV("#pfTodayW", P.today.w); setT("#vTodayW", P.today.w);
+  setV("#pfBtn1", P.btn[0] || ""); setV("#pfBtn2", P.btn[1] || "");
+  setC("#pfMusicOn", P.music.on); setC("#pfTodayOn", P.today.on);
+  setC("#pfGridOn", P.grid.on);   setC("#pfNoticeOn", P.notice.on);
+  setC("#pfStatusDark", P.statusDark); setC("#pfChipDark", P.chipDark);
+  $("#pfImgPrev") && (P.imgU ? ($("#pfImgPrev").src = P.imgU) : $("#pfImgPrev").removeAttribute("src"));
+  $("#rPfBgImg").style.display = P.bg.same ? "none" : "";
+  toggleOutRows(); toggleRows(); syncChipUI();
+}
+
+/* ---- 초기화 ---- */
 function init(){
   applyLang();
   S.bgColor = PAL.light.chatBg;
-  $("#cBg").value = S.bgColor; $("#cBgHex").value = S.bgColor;
-  $("#tTime").value = S.time; $("#nBatt").value = S.batt;
-  $("#tTitle").value = S.title; $("#nCount").value = S.count;
-  $("#tInput").value = S.inputPh; $("#tMeName").value = S.me.name;
-  $("#tStatusMsg").value = S.statusMsg;
-  $("#rRadius").value = S.radius; $("#vRadius").textContent = S.radius;
-  $("#rFont").value = S.fontSize; $("#vFont").textContent = S.fontSize;
-  $("#rPad").value = S.pad; $("#vPad").textContent = S.pad;
-  $("#cMock").value = S.mockColor; $("#cOut").value = S.outColor;
-  $("#rOutZoom").value = S.outFit.zoom; $("#vOutZoom").textContent = S.outFit.zoom+"%";
-  $("#rOutXs").value = S.outFit.ox; $("#rOutYs").value = S.outFit.oy;
-  toggleOutRows();
   resetColorsFromPalette();
-  const P = S.prof;
-  $("#pfName").value = P.name; $("#pfSong").value = P.music.title;
-  $("#pfArtist").value = P.music.artist; $("#pfTodayN").value = P.today.n;
-  $("#pfNotice").value = P.notice.text;
-  $("#pfBgColor").value = P.bg.color;
-  $("#pfBgZoom").value = P.bg.fit.zoom; $("#vPfBgZoom").textContent = P.bg.fit.zoom+"%";
-  $("#pfBgX").value = P.bg.fit.ox; $("#pfBgY").value = P.bg.fit.oy;
-  document.querySelectorAll(".tbn").forEach(i => i.value = S.tabs.badges[+i.dataset.i]);
-  $("#frShowMe").checked = S.friends.showMe; $("#frLabel").value = S.friends.label;
-  $("#frFavOn").checked = S.friends.favOn; $("#frFavN").value = S.friends.favCount;
-  $("#pfMusicY").value = P.music.y; $("#vMusicY").textContent = P.music.y;
-  $("#pfMusicW").value = P.music.w; $("#vMusicW").textContent = P.music.w;
-  $("#pfTodayW").value = P.today.w; $("#vTodayW").textContent = P.today.w;
-  $("#pfTodayY").value = P.today.y; $("#vTodayY").textContent = P.today.y;
-  $("#rBgZoom").value = S.bgFit.zoom; $("#vBgZoom").textContent = S.bgFit.zoom+"%";
-  $("#rBgX").value = S.bgFit.ox; $("#rBgY").value = S.bgFit.oy;
-  toggleRows(); buildMembers(); buildMsgEditor(); buildTiles();
+  syncUI(); buildMembers(); buildMsgEditor(); buildTiles();
   S._pin = true;
   render();
 }
