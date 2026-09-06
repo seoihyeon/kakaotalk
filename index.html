@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>카카오톡 메이커 v17</title>
+<title>카카오톡 메이커 v18</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -121,7 +121,7 @@ input[type=range]{width:100%;accent-color:#191919}
 
   <div id="panel">
     <div id="panelHead">
-      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v17</span>
+      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v18</span>
       <div class="langbox">
         <button id="langKo" class="on">한국어</button><button id="langEn">English</button>
       </div>
@@ -402,6 +402,7 @@ input[type=range]{width:100%;accent-color:#191919}
           <span class="btn filebtn grow" style="text-align:center"><span data-i18n="lb.pick">이미지 선택</span><input type="file" id="fOut" accept="image/*"></span>
           <button class="btn sm" id="outImgClear">×</button>
         </div>
+        <p class="hint" id="outImgName" style="display:none"></p>
         <div class="row" id="rOutZ" style="display:none"><label data-i18n="lb.zoom">배경 배율</label><input type="range" id="rOutZoom" min="100" max="320" step="2"><span id="vOutZoom" class="hint" style="margin:0;width:38px"></span></div>
         <div class="row" id="rOutX" style="display:none"><label data-i18n="lb.posx">가로 위치</label><input type="range" id="rOutXs" min="-100" max="100" step="1"></div>
         <div class="row" id="rOutY" style="display:none"><label data-i18n="lb.posy">세로 위치</label><input type="range" id="rOutYs" min="-100" max="100" step="1"></div>
@@ -599,9 +600,14 @@ function urlToBitmap(u){
 async function readImg(file){
   let bm = null;
   try{ bm = await createImageBitmap(file); }catch(e){}
+  if(!bm){                                   // 폴백 1: objectURL → <img>
+    const ou = URL.createObjectURL(file);
+    bm = await urlToBitmap(ou);
+    URL.revokeObjectURL(ou);
+  }
   let u = null;
   try{ u = await fileToDataURL(file); }catch(e){}
-  if(!bm && u) bm = await urlToBitmap(u);
+  if(!bm && u) bm = await urlToBitmap(u);     // 폴백 2: data URL → <img>
   if(!bm){
     alert(LANG==="ko"
       ? "이 이미지는 브라우저가 열지 못했습니다. 아이폰 사진이면 HEIC일 수 있어요 — JPG나 PNG로 바꿔서 넣어주세요."
@@ -2428,10 +2434,20 @@ function toggleOutRows(){
   const on = S.outMode === "image" ? "" : "none";
   ["#rOutImg","#rOutZ","#rOutX","#rOutY"].forEach(id => $(id).style.display = on);
 }
-$("#fOut").addEventListener("change", async e=>{ const fl=e.target.files[0]; if(!fl) return;
-  const R = await readImg(fl); S.outImage = R.bm; S.outImageU = R.u;
-  S.outMode="image"; setChip("#chOut","image"); toggleOutRows(); render(); });
-$("#outImgClear").addEventListener("click", ()=>{ S.outImage=null; S.outImageU=null; render(); });
+$("#fOut").addEventListener("change", async e=>{
+  const fl = e.target.files[0]; if(!fl) return;
+  const lab = $("#outImgName"); lab.style.display = "";
+  lab.textContent = (LANG==="ko"?"읽는 중… ":"reading… ") + fl.name;
+  const R = await readImg(fl);
+  S.outImage = R.bm; S.outImageU = R.u;
+  S.outMode = "image"; setChip("#chOut","image"); toggleOutRows();
+  lab.textContent = R.bm
+    ? fl.name + " · " + R.bm.width + "×" + R.bm.height
+    : (LANG==="ko" ? "읽지 못했습니다 — " + fl.name : "could not read — " + fl.name);
+  render();
+});
+$("#outImgClear").addEventListener("click", ()=>{
+  S.outImage=null; S.outImageU=null; $("#outImgName").style.display="none"; render(); });
 $("#rOutZoom").addEventListener("input", e=>{ S.outFit.zoom=+e.target.value; $("#vOutZoom").textContent=e.target.value+"%"; render(); });
 $("#rOutXs").addEventListener("input", e=>{ S.outFit.ox=+e.target.value; render(); });
 $("#rOutYs").addEventListener("input", e=>{ S.outFit.oy=+e.target.value; render(); });
@@ -2919,6 +2935,9 @@ function syncUI(){
   setChip("#chStatusInk", P.statusInk || "auto"); setC("#pfChipDark", P.chipDark);
   $("#pfImgPrev") && (P.imgU ? ($("#pfImgPrev").src = P.imgU) : $("#pfImgPrev").removeAttribute("src"));
   $("#rPfBgImg").style.display = P.bg.same ? "none" : "";
+  const on = $("#outImgName");
+  if(on){ on.style.display = S.outImage ? "" : "none";
+          if(S.outImage) on.textContent = S.outImage.width + "×" + S.outImage.height; }
   toggleOutRows(); toggleRows(); syncChipUI();
 }
 
