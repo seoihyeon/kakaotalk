@@ -463,9 +463,9 @@ const T = k => LANG==="ko" ? (KO_DEFAULTS[k]||k) : (I18N.en[k]||KO_DEFAULTS[k]||
 
 /* ---------------------------------------------------------------- 기기 */
 const DEVICES = {
-  pm  :{w:440,h:956,top:62,bot:34,r:55},
-  pro :{w:402,h:874,top:59,bot:34,r:52},
-  mini:{w:375,h:812,top:50,bot:34,r:44},
+  pm  :{w:440,h:956,top:62,bot:34,r:55, island:{w:126,  h:37.3, top:11}},
+  pro :{w:402,h:874,top:59,bot:34,r:52, island:{w:125,  h:36.7, top:11}},
+  mini:{w:375,h:812,top:50,bot:34,r:44, notch :{w:162,  h:31}},
   gal :{w:360,h:780,top:44,bot:22,r:36, bezel:9, android:true, hole:{cx:0.5, cy:16, r:6.2}}
 };
 
@@ -2150,10 +2150,28 @@ function paint(g, scale, full){
   if(S.mock && M.D.r > 0){ rr(g, 0, 0, W, H, M.D.r); g.clip(); }
   else { g.beginPath(); g.rect(0,0,W,H); g.clip(); }
   paintScreen(g, M);
-  if(S.mock && M.D.hole){
-    const hc = M.D.hole;
-    g.fillStyle = "#0B0B0B";
-    g.beginPath(); g.arc(W*hc.cx, hc.cy, hc.r, 0, 7); g.fill();
+  /* 노치 · 다이나믹 아일랜드 · 펀치홀 — 목업일 때만 (실제 스크린샷에는 안 찍힘) */
+  if(S.mock){
+    g.fillStyle = "#050505";
+    if(M.D.island){
+      const il = M.D.island;
+      rr(g, W/2 - il.w/2, il.top, il.w, il.h, il.h/2); g.fill();
+    }else if(M.D.notch){
+      const nc = M.D.notch, cx = W/2, nw = nc.w, nh = nc.h, r = 20, cr = 7;
+      g.beginPath();
+      g.moveTo(cx - nw/2 - cr, 0);
+      g.quadraticCurveTo(cx - nw/2, 0, cx - nw/2, cr);
+      g.lineTo(cx - nw/2, nh - r);
+      g.arcTo(cx - nw/2, nh, cx - nw/2 + r, nh, r);
+      g.lineTo(cx + nw/2 - r, nh);
+      g.arcTo(cx + nw/2, nh, cx + nw/2, nh - r, r);
+      g.lineTo(cx + nw/2, cr);
+      g.quadraticCurveTo(cx + nw/2, 0, cx + nw/2 + cr, 0);
+      g.closePath(); g.fill();
+    }else if(M.D.hole){
+      const hc = M.D.hole;
+      g.beginPath(); g.arc(W*hc.cx, hc.cy, hc.r, 0, 7); g.fill();
+    }
   }
   g.restore();
   g.restore();
