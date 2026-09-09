@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>카카오톡 메이커 v18</title>
+<title>카카오톡 메이커 v19</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -21,7 +21,18 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);
    linear-gradient(45deg,#e7e9ec 25%,transparent 25%,transparent 75%,#e7e9ec 75%),
    linear-gradient(45deg,#e7e9ec 25%,transparent 25%,transparent 75%,#e7e9ec 75%) 8px 8px,#f7f8f9;
   background-size:16px 16px;border-radius:14px;padding:14px;display:flex;justify-content:center;align-items:center;width:100%;overflow:hidden}
-#cv{max-width:100%;display:block;touch-action:none;cursor:grab;border-radius:2px}
+#cv{max-width:100%;display:block;touch-action:none;cursor:grab;border-radius:2px;transition:transform .08s linear}
+#stage{position:relative}
+.swipeBtn{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:34px;height:52px;border:none;
+  border-radius:10px;background:rgba(255,255,255,.72);color:#191919;font-size:22px;line-height:1;cursor:pointer;
+  box-shadow:0 1px 6px rgba(0,0,0,.14);opacity:0;transition:opacity .15s}
+#stage:hover .swipeBtn{opacity:1}
+#swipePrev{left:6px} #swipeNext{right:6px}
+#swipeFlash{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:4;pointer-events:none;
+  background:rgba(25,25,25,.78);color:#fff;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:99px;opacity:0}
+#swipeFlash.on{animation:flashfade 1.1s ease forwards}
+@keyframes flashfade{0%{opacity:0;transform:translateX(-50%) translateY(-4px)}18%{opacity:1;transform:translateX(-50%) translateY(0)}70%{opacity:1}100%{opacity:0}}
+@media (max-width:860px){ .swipeBtn{opacity:.85} }
 #cv.drag{cursor:grabbing}
 #stageHint{color:var(--sub);font-size:12px;text-align:center}
 #scrollBox{width:100%;max-width:420px;display:none}
@@ -114,14 +125,19 @@ input[type=range]{width:100%;accent-color:#191919}
 <div id="app">
 
   <div id="stageWrap">
-    <div id="stage"><canvas id="cv"></canvas></div>
+    <div id="stage">
+      <button class="swipeBtn" id="swipePrev" aria-label="prev">‹</button>
+      <canvas id="cv"></canvas>
+      <button class="swipeBtn" id="swipeNext" aria-label="next">›</button>
+      <div id="swipeFlash"></div>
+    </div>
     <div id="scrollBox"><input type="range" id="scrollRange" min="0" max="1000" value="1000" step="1"></div>
-    <div id="stageHint" data-i18n="hint.scroll">미리보기를 위아래로 끌거나 아래 막대로 스크롤하세요</div>
+    <div id="stageHint" data-i18n="hint.scroll">위아래로 끌면 스크롤, 좌우로 넘기면 다른 화면 (← → 키도 됩니다)</div>
   </div>
 
   <div id="panel">
     <div id="panelHead">
-      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v18</span>
+      <h1 data-i18n="app.title">카카오톡 메이커</h1><span class="badge" style="margin-left:0">v19</span>
       <div class="langbox">
         <button id="langKo" class="on">한국어</button><button id="langEn">English</button>
       </div>
@@ -370,7 +386,9 @@ input[type=range]{width:100%;accent-color:#191919}
     <details class="sec" open>
       <summary data-i18n="sec.msgs">대화 내용</summary>
       <div class="secbody">
-        <div class="row wide"><label data-i18n="lb.anchor">대화 시작 위치</label></div>
+        <div class="row"><label data-i18n="lb.msgTime">기본 시각</label><input type="text" id="tMsgTime" class="grow" placeholder="오후 2:42"></div>
+        <p class="hint" style="margin-top:0" data-i18n="lb.msgTimeHint">말풍선 옆에 붙는 시각입니다. 상태바 시계와 따로 놉니다. 메시지마다 다르게 하려면 각 메시지의 "시간" 칸에 적으세요.</p>
+        <div class="row wide" style="margin-top:10px"><label data-i18n="lb.anchor">대화 시작 위치</label></div>
         <div class="chips" id="chAnchor" style="margin-bottom:10px">
           <button data-v="top" class="on" data-i18n="an.top">위쪽</button>
           <button data-v="bottom" data-i18n="an.bottom">아래쪽 (실제 카톡)</button>
@@ -448,7 +466,7 @@ input[type=range]{width:100%;accent-color:#191919}
 const I18N = {
  ko:{}, // 기본값은 HTML에 그대로 들어있음
  en:{
-  "app.title":"KakaoTalk Maker","hint.scroll":"Drag the preview, or use the bar below, to scroll",
+  "app.title":"KakaoTalk Maker","hint.scroll":"Drag up/down to scroll, swipe left/right to switch screens (arrow keys work too)",
   "sec.screen":"Screen","lb.screen":"Screen type","sc.chat":"Chat room","sc.list":"Chat list","sc.friends":"Friends","sc.profile":"Profile",
   "lb.chatkind":"Chat type","ck.dm":"1:1","ck.group":"Group","lb.mode":"Theme mode","md.light":"Light","md.dark":"Dark","lb.device":"Device","dv.gal":"Galaxy",
   "sec.theme":"Theme file (.ktheme)","th.none":"none","th.upload":"Open a .ktheme file","th.clear":"Remove",
@@ -460,7 +478,7 @@ const I18N = {
   "lb.bubbleColor":"Bubble colors","lb.send":"Sent","lb.recv":"Received","lb.bgtext":"fill / text","lb.radius":"Corner","lb.tail":"Bubble tail","lb.unread":"Show unread count","lb.unreadC":"Unread color","lb.fontsize":"Text size",
   "sec.header":"Status bar & header","lb.statusbar":"Show status bar","lb.time":"Time","lb.battery":"Battery","lb.charging":"Charging","lb.silent":"Silent mode icon","lb.title":"Room name","lb.people":"Members","lb.searchIco":"Search icon","lb.menuIco":"Menu (≡) icon","lb.inputbar":"Show input bar","lb.inputTxt":"Input placeholder",
   "sec.tabs":"Tab bar","tb.hint":"Unread counts. 0 hides the badge.","tb.t1":"Friends","tb.t2":"Chats","tb.t3":"Open chat","tb.t4":"Shop","tb.t5":"More","tb.dot":"Red dot on More","sec.friendlist":"Friends screen","fr.people":"Friends (participants)","fr.showMe":"Show my profile row","fr.label":"Section title","fr.fav":"Favorites section","fr.favN":"Favorites count","sec.prof":"Profile screen","pf.kind":"Type","pf.me":"My profile","pf.friend":"Friend's profile","pf.name":"Name","pf.status":"Status message","pf.photo":"Profile photo","pf.bg":"Cover","pf.bgImage":"Image","pf.bgColor":"Solid","pf.bgSame":"Same as chat room","pf.statusInk":"Status bar ink","pf.inkAuto":"Auto","pf.inkLight":"White","pf.inkDark":"Black","pf.inkHint":"Auto switches to black when the top of the cover is light.","pf.editLabel":"Edit button","pf.center":"Center","pf.chipDark":"Darker chips (for light covers)","pf.chipW":"Chip width","pf.chipX":"Horizontal","pf.chipY":"Vertical","pf.dragHint":"You can also drag the chips right on the preview.","pf.music":"Music chip","pf.song":"Song","pf.artist":"Artist","pf.right":"Right","pf.left":"Left","pf.today":"TODAY chip (my profile only)","pf.todayN":"Visits","pf.btn1":"Button 1","pf.btn2":"Button 2","pf.grid":"Post grid","pf.notice":"Bottom visibility notice","sec.people":"Participants","lb.me":"Me (right side)","lb.others":"Others","lb.photo":"Photo","lb.addMemb":"+ Add participant","lb.status":"Status message",
-  "sec.msgs":"Messages","lb.anchor":"Conversation starts at","an.top":"Top","an.bottom":"Bottom (like the real app)","lb.addMsg":"+ Message","lb.addDate":"+ Date line","lb.clear":"Clear",
+  "sec.msgs":"Messages","lb.msgTime":"Message time","lb.msgTimeHint":"The time shown next to bubbles. Separate from the status bar clock. Set a per-message time in each message\u2019s \u201cTime\u201d box.","lb.anchor":"Conversation starts at","an.top":"Top","an.bottom":"Bottom (like the real app)","lb.addMsg":"+ Message","lb.addDate":"+ Date line","lb.clear":"Clear",
   "lb.msgHint":"The timestamp shows only on the last message of a run. Consecutive messages from the same person share one profile picture.",
   "sec.export":"Mockup & export","lb.mock":"iPhone mockup","lb.mockColor":"Device color","lb.outbg":"Outer background","out.none":"Transparent","out.color":"Solid","out.image":"Image","lb.pad":"Padding","lb.ratio":"Canvas ratio","rt.auto":"Auto",
   "lb.saveRange":"Save range","sv.screen":"Screen as shown","sv.full":"Whole conversation (tall)","lb.save":"Save as PNG","lb.expJson":"Save settings (JSON)","lb.impJson":"Load settings","lb.jsonHint":"Uploaded photos are saved too. A .ktheme file has to be opened again separately.",
@@ -516,7 +534,7 @@ const S = {
   bgMode:"default", bgColor:"#B2C7DA", bgImage:null, bgFit:{zoom:100, ox:0, oy:0},
   radius:14, tail:true, unreadOn:true, unreadColor:"#F7B500", fontSize:15,
   sendBg:null, sendTx:null, recvBg:null, recvTx:null,
-  status:true, time:"2:42", batt:79, charging:false, silent:false,
+  status:true, time:"2:42", batt:79, charging:false, silent:false, msgTime:"오후 2:42",
   title:"정스텔라", count:24, search:true, menu:true, inputBar:true, inputPh:"",
   me:{name:"서이현", img:null},
   members:[{name:"정스텔라", img:null}],
@@ -1397,12 +1415,18 @@ function bubbleSlot(mine, first){
 }
 function whoName(w){ return w === 0 ? S.me.name : (S.members[w-1] ? S.members[w-1].name : ""); }
 function whoObj(w){ return w === 0 ? S.me : S.members[w-1]; }
+/* 말풍선 옆 시각 — 상태바 시계와 별개. 비워두면 상태바 시각에서 만들어 씀 */
 function defTime(){
+  const own = String(S.msgTime == null ? "" : S.msgTime).trim();
+  if(own) return own;
   const t = String(S.time||"").trim();
   const m = t.match(/^(\d{1,2}):(\d{2})/);
-  if(!m) return LANG==="ko" ? "오후 "+t : t+" PM";
-  const h = +m[1];
-  return LANG==="ko" ? (h>=12&&h<=23 ? "오후 " : "오후 ")+t : t+" PM";
+  if(!m) return t;
+  const h = +m[1], mm = m[2];
+  const pm = h >= 12;
+  const h12 = h % 12 === 0 ? 12 : h % 12;          // 24시로 적어도 12시간제로 바꿈
+  const hhmm = h12 + ":" + mm;
+  return LANG === "ko" ? (pm ? "오후 " : "오전 ") + hhmm : hhmm + (pm ? " PM" : " AM");
 }
 
 function buildChat(g, W){
@@ -1536,7 +1560,7 @@ function paintChatBody(g, W, top, bot, built, scroll, p){
       for(const L of it.lines){ g.fillText(L, it.x + it.ins.l, ty); ty += it.lineH; }
     }
     /* 시간 · 안읽음 */
-    const showTime = it.last;
+    const showTime = it.last || !!(m.time && m.time.trim());   // 직접 적었으면 항상 표시
     const unread = S.unreadOn ? (m.unread|0) : 0;
     if(showTime || unread){
       const tstr = (m.time && m.time.trim()) ? m.time.trim() : defTime();
@@ -2327,7 +2351,7 @@ function render(){
   cv.style.height = Math.round(OH*fit) + "px";
   paint(ctx, scale, false);
   const can = M0.maxScroll > 0;
-  $("#stageHint").style.display = can ? "" : "none";
+  $("#stageHint").style.display = "";
   $("#scrollBox").style.display = can ? "block" : "none";
   syncScrollUI(); syncChipUI();
 }
@@ -2495,6 +2519,7 @@ $("#kUnreadOn").addEventListener("change", e=>{ S.unreadOn=e.target.checked; ren
 /* ---- 상단바/헤더 ---- */
 $("#kStatus").addEventListener("change", e=>{ S.status=e.target.checked; render(); });
 $("#tTime").addEventListener("input", e=>{ S.time=e.target.value; render(); });
+$("#tMsgTime").addEventListener("input", e=>{ S.msgTime=e.target.value; buildMsgEditor(); render(); });
 $("#nBatt").addEventListener("input", e=>{ S.batt=clamp(+e.target.value||0,0,100); render(); });
 $("#kCharge").addEventListener("change", e=>{ S.charging=e.target.checked; render(); });
 $("#kSilent").addEventListener("change", e=>{ S.silent=e.target.checked; render(); });
@@ -2767,7 +2792,30 @@ function buildThumbs(){
 }
 
 /* ---- 미리보기 스크롤 ---- */
+const SCREENS = ["chat","chatlist","friends","profile"];
+function gotoScreen(dir){
+  const i = SCREENS.indexOf(S.screen);
+  const n = SCREENS[(i + dir + SCREENS.length) % SCREENS.length];
+  S.screen = n; S.scroll = 0; S._pin = (n === "chat");
+  setChip("#chScreen", n);
+  if(n === "profile") $("#secProf").open = true;
+  if(n === "friends") $("#secFriends").open = true;
+  toggleRows(); render();
+  const fl = $("#swipeFlash");
+  fl.textContent = ({chat:"채팅방",chatlist:"채팅 목록",friends:"친구 목록",profile:"프로필"})[n];
+  if(LANG !== "ko") fl.textContent = ({chat:"Chat room",chatlist:"Chat list",friends:"Friends",profile:"Profile"})[n];
+  fl.classList.remove("on"); void fl.offsetWidth; fl.classList.add("on");
+}
+$("#swipePrev").addEventListener("click", ()=>gotoScreen(-1));
+$("#swipeNext").addEventListener("click", ()=>gotoScreen(1));
+window.addEventListener("keydown", e=>{
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+  if(e.key === "ArrowLeft")  gotoScreen(-1);
+  if(e.key === "ArrowRight") gotoScreen(1);
+});
+
 let dragging = false, lastY = 0, chipDrag = null;
+let gest = null, gsx = 0, gsy = 0;
 cv.addEventListener("pointermove", e=>{                       // 칩 위에서는 커서로 알려줌
   if(dragging || chipDrag) return;
   if(S.screen !== "profile"){ cv.style.cursor=""; return; }
@@ -2789,6 +2837,7 @@ cv.addEventListener("pointerdown", e=>{
     }
   }
   dragging = true; lastY = e.clientY; S._pin = false;
+  gest = null; gsx = e.clientX; gsy = e.clientY;
   cv.setPointerCapture(e.pointerId); cv.classList.add("drag");
 });
 cv.addEventListener("pointermove", e=>{
@@ -2804,12 +2853,26 @@ cv.addEventListener("pointermove", e=>{
     return;
   }
   if(!dragging) return;
+  const tx = e.clientX - gsx, ty = e.clientY - gsy;
+  if(gest === null && (Math.abs(tx) > 8 || Math.abs(ty) > 8)){
+    gest = Math.abs(tx) > Math.abs(ty)*1.2 ? "swipe" : "scroll";   // 첫 움직임으로 방향 결정
+  }
+  if(gest === "swipe"){ cv.style.transform = "translateX(" + clamp(tx*0.28, -40, 40) + "px)"; return; }
   const dy = (e.clientY - lastY)/(S._fit||1); lastY = e.clientY;
   S.scroll = clamp(S.scroll - dy, 0, S._maxScroll || 0);
   syncScrollUI(); render();
 });
-cv.addEventListener("pointerup",   e=>{ dragging=false; chipDrag=null; cv.style.cursor=""; cv.classList.remove("drag"); });
-cv.addEventListener("pointercancel",()=>{ dragging=false; chipDrag=null; cv.style.cursor=""; cv.classList.remove("drag"); });
+function endGesture(e){
+  cv.style.transform = "";
+  if(gest === "swipe" && e){
+    const tx = e.clientX - gsx;
+    if(Math.abs(tx) > 45) gotoScreen(tx < 0 ? 1 : -1);
+  }
+  gest = null; dragging = false; chipDrag = null;
+  cv.style.cursor = ""; cv.classList.remove("drag");
+}
+cv.addEventListener("pointerup", endGesture);
+cv.addEventListener("pointercancel", ()=>endGesture(null));
 cv.addEventListener("wheel", e=>{
   if(!S._maxScroll) return;                       // 스크롤할 게 없으면 페이지가 스크롤되게 둠
   const before = S.scroll;
@@ -2893,7 +2956,7 @@ function syncUI(){
   setChip("#chPfBg", P.bg.same ? "same" : P.bg.mode);
 
   setV("#cBg", S.bgColor); setV("#cBgHex", S.bgColor);
-  setV("#tTime", S.time); setV("#nBatt", S.batt);
+  setV("#tTime", S.time); setV("#nBatt", S.batt); setV("#tMsgTime", S.msgTime == null ? "" : S.msgTime);
   setV("#tTitle", S.title); setV("#nCount", S.count);
   setV("#tInput", S.inputPh); setV("#tMeName", S.me.name);
   setV("#tStatusMsg", S.statusMsg);
